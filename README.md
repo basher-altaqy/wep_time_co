@@ -1,8 +1,9 @@
 # صَفّ (Saff)
 
-> منصة تشكيل فرق دقيقة قائمة على الوقت والمخرجات. واجهة عربية بالكامل (RTL).
+> نظام تشغيل لتشكيل وتشغيل فرق تنفيذية صغيرة (Venture OS). واجهة عربية بالكامل (RTL).
 
 **النسخة الحالية:** Lean MVP — Auth + Ventures + Applications فقط.
+**الرؤية الكاملة:** [`docs/VISION.md`](docs/VISION.md) — نظام تشغيل متكامل من اكتشاف الفكرة إلى التسوية النهائية.
 
 ---
 
@@ -10,40 +11,38 @@
 
 > مكان يلتقي فيه أصحاب الأفكار بمساهمين يلتزمون **بساعات محددة أو مخرجات محددة**، عبر طلبات انضمام منظمة، لا بمحادثات مشتتة.
 
-اقرأ التفاصيل الكاملة في [`docs/PRD.md`](docs/PRD.md) و[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+---
+
+## الوثائق
+
+كل وثيقة تخدم قارئًا مختلفًا وغرضًا مختلفًا. اقرأها بهذا الترتيب لتفهم المشروع كاملًا:
+
+[`docs/VISION.md`](docs/VISION.md) — الرؤية الاستراتيجية الكاملة لـ Venture OS. تشرح المشكلة التي نحلّها، التموضع، النموذج الكياني الكامل (Venture, Studio, Mission, Canvas, Climb Map)، وكيف ستبدو التجربة عند نضج المنصّة.
+
+[`docs/ROADMAP.md`](docs/ROADMAP.md) — خارطة الطريق التفصيلية من v0.1 إلى v4. كل إصدار له فرضية يَختبرها، نطاق محدّد، ومعايير خروج صريحة قبل الانتقال للذي يليه.
+
+[`docs/PRD.md`](docs/PRD.md) — متطلبات المنتج التفصيلية للنسخة الحالية (v0.1). يحوي 12 user story، 4 sprints، 20 مهمّة، ومقاييس النجاح الدقيقة.
+
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — المعمارية التقنية للنسخة الحالية. تدفّقات Auth، RLS، Server Actions، وكيف يتكامل كل شيء.
+
+[`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) — تصميم نظام الحوكمة المُستقبلي (سيُنفَّذ في v2). مصفوفة القرارات الطبقية الأربعة، آلية التصويت، وحالات الحافّة المُعالَجة.
+
+[`docs/LEDGER.md`](docs/LEDGER.md) — تصميم سجلّ المساهمة ووحدات المساهمة المُستقبلية (سيُنفَّذ في v3). يشرح كيف نُحاسب الجهد بعدالة، والفصل القانوني بين السجلّ والـ CUs وطبقة التعويض.
+
+[`docs/SETUP.md`](docs/SETUP.md) — دليل الإعداد خطوة بخطوة لمن يريد تشغيل المشروع محليًّا.
 
 ---
 
-## التشغيل المحلي
-
-### المتطلبات
-- Node.js ≥ 18.17
-- حساب على [Supabase](https://supabase.com) (الباقة المجانية كافية للـ MVP)
-- (اختياري) [Supabase CLI](https://supabase.com/docs/guides/cli) للتشغيل المحلي
-
-### الخطوات
+## التشغيل المحلي السريع
 
 ```bash
-# 1. تثبيت الحزم
 npm install
-
-# 2. نسخ env
-cp .env.example .env.local
-
-# 3. عبّئ المتغيرات من Supabase dashboard
-# - NEXT_PUBLIC_SUPABASE_URL
-# - NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-# 4. تشغيل الـ migrations على قاعدة بياناتك
-# في Supabase Dashboard → SQL Editor:
-# نفّذ supabase/migrations/0001_initial_schema.sql
-# ثم supabase/migrations/0002_rls_policies.sql
-
-# 5. تشغيل التطبيق
+cp .env.example .env.local   # عبّئ المتغيرات من Supabase
+# طبّق supabase/migrations/*.sql في SQL Editor
 npm run dev
 ```
 
-افتح [http://localhost:3000](http://localhost:3000).
+التفاصيل الكاملة في [`docs/SETUP.md`](docs/SETUP.md).
 
 ---
 
@@ -51,52 +50,40 @@ npm run dev
 
 ```
 saff/
-├── docs/                        # PRD, ARCHITECTURE
+├── docs/                        # كل الوثائق (VISION, ROADMAP, PRD, ...)
 ├── supabase/migrations/         # SQL migrations
 ├── src/
 │   ├── app/                     # Next.js App Router
-│   │   ├── (auth)/              # login, signup (بدون layout التطبيق)
+│   │   ├── (auth)/              # login, signup
 │   │   ├── (app)/               # محمي بـ middleware
-│   │   │   ├── ventures/        # discovery + new + [id]
-│   │   │   ├── applications/    # طلباتي المقدمة
+│   │   │   ├── ventures/
+│   │   │   ├── applications/
 │   │   │   └── profile/
-│   │   ├── auth/callback/       # OAuth/email callback
+│   │   ├── auth/callback/
 │   │   ├── globals.css
-│   │   ├── layout.tsx           # dir="rtl" lang="ar"
-│   │   └── page.tsx             # Landing
+│   │   └── layout.tsx           # dir="rtl" lang="ar"
 │   ├── components/{ui, venture, layout}/
 │   ├── lib/{supabase, validations}/
-│   ├── types/database.ts
 │   └── middleware.ts
-├── .env.example
-├── next.config.mjs
-├── tailwind.config.ts
-└── tsconfig.json
+└── package.json
 ```
+
+---
+
+## المكدّس التقني الحالي
+
+Next.js 15 (App Router) + React 19 + TypeScript للواجهة والمنطق. Supabase (Postgres + Auth + RLS) للبيانات والمصادقة. Tailwind CSS مع `tailwindcss-rtl` للتصميم العربي. Zod للتحقّق المتزامن على الخادم والعميل. nanoid لتوليد slugs فريدة.
+
+طبقات v1 و v2 و v3 ستُضيف: tldraw للـ Canvas، React Flow للـ Climb Map، Yjs أو Liveblocks للتعاون المتزامن. التفاصيل في [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ---
 
 ## قواعد الأمان
 
-- **RLS مفعّلة على كل الجداول** بمبدأ default deny.
-- `SUPABASE_SERVICE_ROLE_KEY` يُستخدم فقط في Server Actions، لا في Client Components.
-- كل Server Action يفحص الـ Auth قبل أي mutation.
-- لا تخزن أسرارًا في الـ commit. الـ `.gitignore` يستثني `.env*`.
-
----
-
-## خارطة الطريق
-
-- [x] **MVP (الحالي):** Auth + Ventures + Applications
-- [ ] **v0.2:** Profile completions + Email notifications للطلبات
-- [ ] **v1:** Mission Canvas (tldraw) + Tasks + Time Entries + Ledger للقراءة
-- [ ] **v2:** Climb Map (React Flow) + Voting & Governance + Realtime
-- [ ] **v3:** Public Mission Board + Stripe Connect
-
-التفاصيل في [`docs/PRD.md`](docs/PRD.md) قسم §8.
+RLS مفعّلة على كل الجداول بمبدأ default deny. `SUPABASE_SERVICE_ROLE_KEY` يُستخدم فقط في Server Actions، لا في Client Components. كل Server Action يفحص الـ Auth قبل أي mutation. لا تُخزَّن أسرار في الـ commit؛ الـ `.gitignore` يستثني `.env*`.
 
 ---
 
 ## الترخيص
 
-سيتم تحديده — حاليًا All Rights Reserved.
+سيتم تحديده في v0.2 — حاليًا All Rights Reserved.
