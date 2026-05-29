@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+// @ts-expect-error -- tailwindcss-rtl ships without TypeScript declarations
+import tailwindcssRtl from "tailwindcss-rtl";
 
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
@@ -48,7 +50,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-rtl")],
+  plugins: [tailwindcssRtl],
 };
 
 export default config;
