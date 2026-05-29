@@ -38,6 +38,9 @@ pnpm-debug.log*
 supabase/.branches
 supabase/.temp
 
+# local secrets (NEVER commit)
+.secrets/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
