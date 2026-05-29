@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { applicationSchema } from "@/lib/validations";
+import type { TablesInsert } from "@/types/database";
 
 export type ActionResult =
   | { ok: true; data?: unknown }
@@ -89,7 +90,7 @@ export async function submitApplicationAction(
   }
 
   const d = parsed.data;
-  const insertPayload: Record<string, unknown> = {
+  const insertPayload: TablesInsert<"applications"> = {
     venture_id: ventureId,
     applicant_id: user.id,
     mode: d.mode,
