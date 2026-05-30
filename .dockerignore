@@ -1,0 +1,56 @@
+# Dependencies (install fresh in the deps stage)
+node_modules
+
+# Next.js build output (built fresh inside the image)
+.next
+out
+
+# Production output
+build
+dist
+
+# Local env (NEVER bake into image; provided via build args / runtime env_file)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Local secrets directory
+.secrets
+
+# Git & GitHub
+.git
+.github
+.gitignore
+.gitattributes
+
+# Editor & OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.pem
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Docs (not needed at runtime)
+docs
+README.md
+
+# Supabase CLI artifacts (migrations live in repo for SQL editor; image doesn't need them)
+supabase
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Docker meta itself
+Dockerfile
+docker-compose.yml
+.dockerignore
+nginx.conf

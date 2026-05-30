@@ -1,0 +1,50 @@
+version: "3.8"
+
+# Saff — isolated stack. Does NOT share state with oil-tanker-demo:
+#   - dedicated network: saff-net
+#   - dedicated containers: saff-app, saff-nginx
+#   - host port 13392 (oil-tanker uses 13391)
+# Variables are interpolated from a `.env` file at the same path on the
+# deployment host (NOT committed). That `.env` must define:
+#   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY,
+#   NEXT_PUBLIC_SITE_URL, SUPABASE_SERVICE_ROLE_KEY.
+
+services:
+  saff-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: "${NEXT_PUBLIC_SUPABASE_URL}"
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: "${NEXT_PUBLIC_SUPABASE_ANON_KEY}"
+        NEXT_PUBLIC_SITE_URL: "${NEXT_PUBLIC_SITE_URL}"
+    container_name: saff-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: "3002"
+      HOSTNAME: "0.0.0.0"
+    expose:
+      - "3002"
+    networks:
+      - saff-net
+
+  saff-nginx:
+    image: nginx:1.27-alpine
+    container_name: saff-nginx
+    restart: unless-stopped
+    depends_on:
+      - saff-app
+    ports:
+      - "13392:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - saff-net
+
+networks:
+  saff-net:
+    name: saff-net
+    driver: bridge
